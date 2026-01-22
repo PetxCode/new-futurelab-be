@@ -48,6 +48,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", protect, async (req, res) => {
   try {
     // Check if user is admin
+    console.log("User making request:", req.user);
     if (!req.user.isAdmin) {
       return res.status(403).json({
         success: false,
