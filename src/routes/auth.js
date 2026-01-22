@@ -124,4 +124,41 @@ router.get("/me", protect, async (req, res) => {
   }
 });
 
+// @route   PUT /api/auth/make-admin/:userId
+// @desc    Make a user an admin (for development/testing)
+// @access  Public (should be protected in production)
+router.put("/make-admin/:userId", async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.userId,
+      { isAdmin: true },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User promoted to admin",
+      user: {
+        _id: user._id,
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 module.exports = router;
